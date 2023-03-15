@@ -3,10 +3,11 @@ const{
 }= require("../Services/userServices.js");
 
 exports.viewAllUsers = async(req,res)=>{
-    const page=req.query.page;
-    
-    const controllerAdd = await allServices(page);
-    console.log(controllerAdd);
+    const page= req.query.page;
+    const limit = req.query.limit;
+    const controllerAdd = await allServices(page,limit);
+    console.log(page,limit);
+    console.log(controllerAdd)
     res.status(200).send(controllerAdd);
 }
 exports.getSingleUser=async(req,res)=>{
