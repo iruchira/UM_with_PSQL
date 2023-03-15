@@ -10,15 +10,21 @@ const pool = new Pool({
   post: 5432,
 })
 
-exports.allServices = async (page) => {
-  console.log(page)
-  const limit = 1;
-  var offset = (page - 1) * limit;
-  const results = await pool.query(`SELECT project.basicDetails.user_id,project.basicDetails.firstname,project.basicDetails.lastname,project.basicDetails.gender,project.basicDetails.date_of_birth,project.basicDetails.contactno,project.loginDetails.log_id,project.loginDetails.email,project.loginDetails.password,project.loginDetails.user_id,project.ResidentialDetails.add_id,project.ResidentialDetails.buildingname,project.ResidentialDetails.street,project.ResidentialDetails.landmark,project.ResidentialDetails.pincode,project.ResidentialDetails.log_id,project.stateDetails.stateadd_id,project.stateDetails.state,project.stateDetails.city,project.stateDetails.add_id FROM project.basicDetails INNER JOIN project.loginDetails ON project.basicDetails.user_id = project.loginDetails.user_id INNER JOIN project.ResidentialDetails ON project.loginDetails.log_id = project.ResidentialDetails.log_id INNER JOIN project.stateDetails ON project.ResidentialDetails.add_id = project.stateDetails.add_id where project.basicDetails.user_delete='0' limit ${limit} offset ${offset}`);
-
-  console.log(results.rows);
-  return results.rows;
+exports.allServices = async (page,limit) => {
+   page = parseInt(page);
+   limit = parseInt (limit);
+  // const limit = 1;
+  var off = (page - 1) * limit;
+  // const off=0;
+  const results = await pool.query(`SELECT project.basicDetails.user_id,project.basicDetails.firstname,project.basicDetails.lastname,project.basicDetails.gender,project.basicDetails.date_of_birth,project.basicDetails.contactno,basicDetails.user_delete,project.loginDetails.log_id,project.loginDetails.email,project.loginDetails.password,project.loginDetails.user_id,project.ResidentialDetails.add_id,project.ResidentialDetails.buildingname,project.ResidentialDetails.street,project.ResidentialDetails.landmark,project.ResidentialDetails.pincode,project.ResidentialDetails.log_id,project.stateDetails.stateadd_id,project.stateDetails.state,project.stateDetails.city,project.stateDetails.add_id FROM project.basicDetails INNER JOIN project.loginDetails ON project.basicDetails.user_id = project.loginDetails.user_id INNER JOIN project.ResidentialDetails ON project.loginDetails.log_id = project.ResidentialDetails.log_id INNER JOIN project.stateDetails ON project.ResidentialDetails.add_id = project.stateDetails.add_id where project.basicDetails.user_delete='0' limit ${limit} offset ${off}`);
+  const totalRecord=await pool.query('SELECT count(*) from project.basicDetails');
+  dataOnPage = (results.rows);
+  
+  return {data:dataOnPage , totalRecords:totalRecord.rows}
+  // console.log(results.rows);
+  // return results.rows;
 };
+
 
 exports.getOneUser = async (emailChar) => {
   const result = await pool.query(`SELECT project.basicDetails.user_id,project.basicDetails.firstname,project.basicDetails.lastname,project.basicDetails.gender,project.basicDetails.date_of_birth,project.basicDetails.contactno,project.loginDetails.log_id,project.loginDetails.email,project.loginDetails.password,project.loginDetails.user_id,project.ResidentialDetails.add_id,project.ResidentialDetails.buildingname,project.ResidentialDetails.street,project.ResidentialDetails.landmark,project.ResidentialDetails.pincode,project.ResidentialDetails.log_id,project.stateDetails.stateadd_id,project.stateDetails.state,project.stateDetails.city,project.stateDetails.add_id FROM project.basicDetails INNER JOIN project.loginDetails ON project.basicDetails.user_id = project.loginDetails.user_id INNER JOIN project.ResidentialDetails ON project.loginDetails.log_id = project.ResidentialDetails.log_id INNER JOIN project.stateDetails ON project.ResidentialDetails.add_id = project.stateDetails.add_id WHERE project.loginDetails.email LIKE '%${emailChar}%' AND project.basicDetails.user_delete='0' `)
