@@ -37,7 +37,6 @@
                     headers: {
                         "Content-Type": "application/json",
                     },
-
                     body: JSON.stringify({
                         firstname: data.firstname,
                         lastname: data.lastname,
@@ -158,16 +157,14 @@
     const getData = async () => {
         try {
             const res = await fetch(
-                `http://localhost:3000/user?page=${page}&limit=9`,
+                `http://localhost:3000/user/?page=${page}&limit=2`,
                 {
                     method: "GET",
                     headers: { "content-type": "application/json" },
                 }
             );
-
             const dataFromAPI = await res.json();
             console.log(await dataFromAPI);
-
             userArray = dataFromAPI.data;
             console.log(dataFromAPI);
             totalRecords = dataFromAPI.data.length;
